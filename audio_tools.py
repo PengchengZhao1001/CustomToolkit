@@ -14,6 +14,7 @@ def wav_repeat(input_file, output_file, repeat_time):
     wav, sr = sf.read(input_file) # [44100,2]
     new_signal = np.tile(wav, (repeat_time, 1))
     sf.write(output_file, new_signal, sr)
+    assert 1==2
 
 
 if __name__ == "__main__":
