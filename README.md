@@ -1,3 +1,7 @@
+#  自定义一些常用的工具包函数,方便以后使用
+
+在未来使用中, 慢慢优化存在的bug...
+
 ## [audio_tools.py](https://github.com/PengchengZhao1001/CustomToolkit/blob/main/audio_tools.py)
 
         音频裁剪, split_audio()
