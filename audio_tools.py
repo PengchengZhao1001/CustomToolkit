@@ -47,11 +47,11 @@ def extract_audio_and_save(root, save_root):  # 提取视频中的音频流,并�
             print("请注意,文件夹内除了mp4格式,还有其他格式!!!!")
             print("#" * 10)
         print("视频总量:", len(video_list))
-        print("视频列表:",video_list)
+        print("视频列表:", video_list)
         count = 0
 
-        save_root = '/data4T/下载tmp/XD-Violence_OneDrive_Testvideos/audios'
         os.makedirs(save_root, exist_ok=True)
+        print("要保存的视频的文件夹地址: ", save_root)
 
         for i in video_list:
             input_file = os.path.join(root, i)
@@ -64,6 +64,7 @@ def extract_audio_and_save(root, save_root):  # 提取视频中的音频流,并�
                 audio = AudioFileClip(input_file)
                 audio.write_audiofile(save_path)  # 除了wav,m4v,mp3等音频格式貌似也行
             except:
+                os.remove(save_path)
                 print("有问题的视频名字:", name)
                 count += 1
         print("有问题的视频总量:", count)
@@ -74,11 +75,11 @@ def extract_audio_and_save(root, save_root):  # 提取视频中的音频流,并�
         save_path = '{}/{}.wav'.format(save_root, name)
         if os.path.exists(save_path):  # 如果之前处理过了,就可以直接跳过
             pass
-
         try:
             audio = AudioFileClip(root)
             audio.write_audiofile(save_path)  # 除了wav,m4v,mp3等音频格式貌似也行
         except:
+            os.remove(save_path)
             raise ValueError("视频有问题:[{}]".format(root))
 
     else:
@@ -95,12 +96,12 @@ def read_audio_check(root):  # 读取音频看哪些有问题
         files = os.listdir(root)
         audio_list = [file for file in files if file.endswith('.wav')]
         if len(files) != len(audio_list):
-            print("#"*10)
+            print("#" * 10)
             print("请注意,文件夹内除了wav格式,还有其他格式!!!!")
             print("#" * 10)
 
         print("音频总量:", len(audio_list))
-        print("音频列表:",audio_list)
+        print("音频列表:", audio_list)
         count = 0
         for i in audio_list:
             input_file = os.path.join(root, i)
@@ -124,7 +125,7 @@ def read_audio_check(root):  # 读取音频看哪些有问题
 
 if __name__ == "__main__":
     # 裁剪音频
-    # input_file = "/home/media/桌面/LWcZGccvDpg.wav"  # 输入音频文件
+    # input_file = "/home/media/桌面/xxxx.wav"  # 输入音频文件
     # start_time = "00:00:00"  # 分割起始时间
     # duration = "00:00:01"  # 分割持续时间
     # output_file = "/home/media/桌面/split_audio.wav"  # 输出分割后的音频文件名
@@ -136,6 +137,7 @@ if __name__ == "__main__":
     # wav_repeat(input_file, output_file, 10)
 
     # 提取视频中的音频,
-    extract_audio_and_save(root='/data4T/下载tmp/XD-Violence_OneDrive_Testvideos/samples',save_root='/data4T/下载tmp/XD-Violence_OneDrive_Testvideos/samples_audio')
+    extract_audio_and_save(root='/data4T/下载tmp/xxxx/xxxx.mp4',
+                           save_root='/data4T/下载tmp/xxxx/samples_audio1')
     # 读取音频,查看行不行
-    # read_audio_check('/data4T/下载tmp/XD-Violence_OneDrive_Testvideos/samples_audios')
+    # read_audio_check('/data4T/下载tmp/xxxx/samples_audios')
