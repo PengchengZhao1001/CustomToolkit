@@ -5,9 +5,6 @@ import shutil
 import sys
 
 
-# ffmpeg的输出似乎可以屏蔽,还未尝试
-
-
 def resize_frames(raw_root: str, H: int = 256, W: int = 256, save_raw_dir: bool = False,
                   print_: bool = True):  # 对文件夹内的图像帧进行resize
     '''
@@ -155,7 +152,8 @@ def extract_frames_ffmpeg(root: str, save_root: str, fps=None, resize: bool = Fa
 
 
 if __name__ == "__main__":
-    extract_frames_ffmpeg(root='/data4T/下载tmp/samples/Before.Sunset.2004__#01-14-30_01-16-51_label_A.mp4',
+    # ffmpeg的输出似乎可以屏蔽,还未尝试
+    extract_frames_ffmpeg(root='/data4T/下载tmp/samples/xxx.mp4',
                           save_root='/data4T/下载tmp/frames',
                           fps=None, resize=True, H=256, W=256, save_raw_dir=False
                           )
