@@ -1,6 +1,6 @@
 #  自定义一些常用的工具包函数,方便以后使用, 更新ing...
 
-由于目标是方便自身使用,  因此可能会存在bug,   将在使用中修复.    仅供读者参考.
+将在使用中修复可能存在的bug.    仅供读者参考.
 
 ## [audio_tools.py](https://github.com/PengchengZhao1001/CustomToolkit/blob/main/audio_tools.py)
 
