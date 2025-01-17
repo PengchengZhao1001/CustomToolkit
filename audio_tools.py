@@ -1,16 +1,16 @@
 import subprocess
 import os
-import soundfile as sf
 import numpy as np
 import soundfile as sf
 from moviepy.editor import AudioFileClip
+import sys
 
 
-def split_audio(input_file, start_time, duration, output_file):  # 裁剪音频
+def split_audio(input_file: str, start_time, duration, output_file:str):  # 裁剪音频
     '''
     :param input_file: 输入的音频文件地址
-    :param start_time: 起始时间
-    :param duration: 时长
+    :param start_time: 起始时间 00:00:00
+    :param duration: 时长 00:00:01
     :param output_file: 保存的音频文件地址
     :return:
     '''
@@ -18,7 +18,7 @@ def split_audio(input_file, start_time, duration, output_file):  # 裁剪音频
     subprocess.run(command, shell=True)
 
 
-def wav_repeat(input_file, output_file, repeat_time):  # 直接重复音频
+def wav_repeat(input_file: str, output_file: str, repeat_time: int):  # 直接重复音频
     '''
     :param input_file: 输入的音频文件地址
     :param output_file: 保存的音频文件地址
@@ -31,27 +31,69 @@ def wav_repeat(input_file, output_file, repeat_time):  # 直接重复音频
     sf.write(output_file, new_signal, sr)
 
 
-def extract_audio_and_save(root, save_root):  # 提取视频中的音频流,并保存
+def extract_audio_and_save(root: str or list, save_root: str):  # 提取视频中的音频流,并保存
     '''
-    :param root: 输入视频地址 或 视频所属文件夹地址
+    :param root: 输入视频地址 或 视频所属文件夹地址, 或者视频地址列表[C/a.mp4, C1/a1.mp4]
     :param save_root: 音频流所要保存的文件夹地址
     :return:
     '''
+    if isinstance(root, list):  # 指定几个视频文件,批量处理
+        print("输入的是 视频文件地址列表: ", root)
+        judge = str(input("确认是否是处理上述视频:  y(yes)/n(no):  "))
+        if judge == ('n' or 'no'):
+            print("想要处理部分,请给出视频文件list,作为本函数第一个参数,谢谢!")
+            sys.exit(0)
+        elif judge == ('y' or 'yes'):
+            pass
+        else:
+            raise ValueError("只能输入y,yes,n,no!")
 
-    if os.path.isdir(root):  # 文件夹
-        print("输入的是视频文件夹地址: ", root)
+        os.makedirs(save_root, exist_ok=True)
+        print("要保存的音频的文件夹地址: ", save_root)
+        count = 0
+
+        for input_file in root:
+            name = input_file.split('/')[-1][:-4]
+            save_path = '{}/{}.wav'.format(save_root, name)
+            if os.path.exists(save_path):  # 如果之前处理过了,就可以直接跳过
+                continue
+
+            try:
+                audio = AudioFileClip(input_file)
+                audio.write_audiofile(save_path)  # 除了wav,m4v,mp3等音频格式貌似也行
+            except:
+                os.remove(save_path)
+                print("有问题的视频名字:", name)
+                count += 1
+        print("有问题的视频总量:", count)
+
+
+    elif os.path.isdir(root):  # 文件夹
+        print("输入的是 视频文件夹地址: ", root)
         files = os.listdir(root)
-        video_list = [file for file in files if file.endswith('.mp4')]
+        video_list = [file for file in files if file.endswith('.mp4')]  #
         if len(files) != len(video_list):
             print("#" * 10)
             print("请注意,文件夹内除了mp4格式,还有其他格式!!!!")
             print("#" * 10)
         print("视频总量:", len(video_list))
+        if len(video_list) == 0: print(
+            "注意,目前默认只是处理mp4格式,其他格式,可以试试修改代码.endswith(('.mp4','其他格式??'))")
+
         print("视频列表:", video_list)
         count = 0
 
+        judge = str(input("确认是否处理文件夹内所有的mp4视频?  y(yes)/n(no):  "))
+        if judge == ('n' or 'no'):
+            print("想要处理部分,请给出视频文件list,作为本函数第一个参数,谢谢!")
+            sys.exit(0)
+        elif judge == ('y' or 'yes'):
+            pass
+        else:
+            raise ValueError("只能输入y,yes,n,no!")
+
         os.makedirs(save_root, exist_ok=True)
-        print("要保存的视频的文件夹地址: ", save_root)
+        print("要保存的音频的文件夹地址: ", save_root)
 
         for i in video_list:
             input_file = os.path.join(root, i)
@@ -70,7 +112,20 @@ def extract_audio_and_save(root, save_root):  # 提取视频中的音频流,并�
         print("有问题的视频总量:", count)
 
     elif os.path.isfile(root):  # 文件
-        print("输入的是视频文件地址: ", root)
+        print("输入的是 视频文件地址: ", root)
+
+        judge = str(input("确认是否处理上述视频?  y(yes)/n(no):  "))
+        if judge == ('n' or 'no'):
+            print("想要处理部分,请给出视频文件list,作为本函数第一个参数,谢谢!")
+            sys.exit(0)
+        elif judge == ('y' or 'yes'):
+            pass
+        else:
+            raise ValueError("只能输入y,yes,n,no!")
+
+        os.makedirs(save_root, exist_ok=True)
+        print("要保存的音频的文件夹地址: ", save_root)
+
         name = root.split('/')[-1][:-4]
         save_path = '{}/{}.wav'.format(save_root, name)
         if os.path.exists(save_path):  # 如果之前处理过了,就可以直接跳过
@@ -86,7 +141,7 @@ def extract_audio_and_save(root, save_root):  # 提取视频中的音频流,并�
         assert 1 == 2, "地址有问题:[{}]".format(root)
 
 
-def read_audio_check(root):  # 读取音频看哪些有问题
+def read_audio_check(root: str):  # 读取音频看哪些有问题
     '''
     :param root: 输入音频地址 或 音频所属文件夹地址
     :return:
@@ -136,8 +191,8 @@ if __name__ == "__main__":
     # output_file = "/home/media/桌面/repeat_audio.wav"
     # wav_repeat(input_file, output_file, 10)
 
-    # 提取视频中的音频,
-    extract_audio_and_save(root='/data4T/下载tmp/xxxx/xxxx.mp4',
-                           save_root='/data4T/下载tmp/xxxx/samples_audio1')
+    #提取视频中的音频
+    extract_audio_and_save(root='/data4T/xxx.mp4',
+                           save_root='/data4T/xxxxxx')
     # 读取音频,查看行不行
     # read_audio_check('/data4T/下载tmp/xxxx/samples_audios')
